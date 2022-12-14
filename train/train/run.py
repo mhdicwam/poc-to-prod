@@ -35,39 +35,53 @@ def train(dataset_path, train_conf, model_path, add_timestamp):
     else:
         artefacts_path = model_path
 
-    # TODO: CODE HERE
     # instantiate a LocalTextCategorizationDataset, use embed method from preprocessing module for preprocess_text param
     # use train_conf for other needed params
-    dataset =
+    dataset = LocalTextCategorizationDataset(
+            dataset_path,
+            batch_size=train_conf["batch_size"],
+            min_samples_per_label=train_conf["min_samples_per_label"],
+            preprocess_text=embed
+    )
 
     logger.info(dataset)
 
-    # TODO: CODE HERE
     # instantiate a sequential keras model
     # add a dense layer with relu activation
     # add an output layer (multiclass classification problem)
-    model =
+    model = Sequential()
+    model.add(Dense(train_conf["dense_dim"], activation="relu"))
+    model.add(Dense(1))
 
-    # TODO: CODE HERE
+    model.compile(loss="categorical_crossentropy", optimizer="Adam", metrics=["accuracy"])
+
     # model fit using data sequences
-    train_history =
+    train_history = model.fit(dataset.get_train_batch()[0],
+                              dataset.get_train_batch()[1],
+                              verbose=1,
+                              epochs=train_conf["epochs"]
+                              )
 
     # scores
     scores = model.evaluate_generator(dataset.get_test_sequence(), verbose=0)
 
     logger.info("Test Accuracy: {:.2f}".format(scores[1] * 100))
 
-    # TODO: CODE HERE
     # create folder artefacts_path
+    dir = os.path.join(artefacts_path, "artefacts_path")
+    if not os.path.exists(dir):
+        os.mkdir(dir)
 
-    # TODO: CODE HERE
     # save model in artefacts folder, name model.h5
+    model.save('artefacts_path', save_format="h5")
 
-    # TODO: CODE HERE
     # save train_conf used in artefacts_path/params.json
+    with open(os.path.join(artefacts_path, "params.json"), "w") as f:
+        json.dump(train_conf, f)
 
-    # TODO: CODE HERE
     # save labels index in artefacts_path/labels_index.json
+    with open(os.path.join(artefacts_path, "labels_index.json"), "w") as f:
+        json.dump(dataset.get_label_to_index_map(), f)
 
     # train_history.history is not JSON-serializable because it contains numpy arrays
     serializable_hist = {k: [float(e) for e in v] for k, v in train_history.history.items()}
@@ -86,7 +100,8 @@ if __name__ == "__main__":
     parser.add_argument("config_path", help="Path to Yaml file specifying training parameters")
     parser.add_argument("artefacts_path", help="Folder where training artefacts will be persisted")
     parser.add_argument("add_timestamp", action='store_true',
-                        help="Create artefacts in a sub folder with name equal to execution timestamp")
+                        help="Create artefacts in a sub folder with name equal to execution timestamp"
+                        )
 
     args = parser.parse_args()
 
