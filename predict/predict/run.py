@@ -4,7 +4,7 @@ import os
 import time
 from collections import OrderedDict
 
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 from numpy import argsort
 
 from preprocessing.preprocessing.embeddings import embed
@@ -29,13 +29,18 @@ class TextPredictionModel:
         """
         # TODO: CODE HERE
         # load model
-        model = pass
+        model = load_model(os.path.join(artefacts_path, "model.h5"))
 
         # TODO: CODE HERE
+
         # load params
+        with open(os.path.join(artefacts_path, "params.json"), "r") as f:
+            params = json.load(f)
 
         # TODO: CODE HERE
         # load labels_to_index
+        with open(os.path.join(artefacts_path, "labels_index.json"), "r") as f:
+            labels_to_index = json.load(f)
 
         return cls(model, params, labels_to_index)
 
@@ -51,12 +56,16 @@ class TextPredictionModel:
 
         # TODO: CODE HERE
         # embed text_list
-
+        embeddings = embed(text_list)
         # TODO: CODE HERE
         # predict tags indexes from embeddings
+        predictions = self.model.predict(embeddings)
 
+        print(predictions)
         # TODO: CODE HERE
-        # from tags indexes compute top_k tags for each text
+        # from tags indexes compute top_k tags for each text #softmax => probabilite index
+        predictions = [[self.labels_index_inv[i] for i in argsort(predictions[i])[-top_k:][::-1]]
+                       for i in range(len(predictions))]
 
         logger.info("Prediction done in {:2f}s".format(time.time() - tic))
 

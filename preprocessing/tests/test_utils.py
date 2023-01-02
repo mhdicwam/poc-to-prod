@@ -78,7 +78,6 @@ class TestBaseTextCategorizationDataset(unittest.TestCase):
         expected = [1, 0, 2]
         self.assertEqual(base.to_indexes(labels), expected)
 
-
 class TestLocalTextCategorizationDataset(unittest.TestCase):
     def test_load_dataset_returns_expected_data(self):
         # we mock pandas read_csv to return a fixed dataframe

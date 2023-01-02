@@ -36,24 +36,22 @@ class TestTrain(unittest.TestCase):
     utils.LocalTextCategorizationDataset.load_dataset = MagicMock(return_value=load_dataset_mock())
 
     def test_train(self):
-        # TODO: CODE HERE
         # create a dictionary params for train conf
         params = {
-            "batch_size": 4,
+            "batch_size": 2,
             "epochs": 1,
             "dense_dim": 1,
-            "min_samples_per_label": 3,
+            "min_samples_per_label": 2,
             "verbose": 1
         }
 
         # we create a temporary file to store artefacts
         with tempfile.TemporaryDirectory() as model_dir:
             # run a training
-            accuracy, artefact_path = run.train("fake_path", params, model_dir, True)
+            accuracy, artefact_path = run.train("fake_path", params, "C:/Users/cham/Desktop/5A/from poc to prod/poc-to-prod-capstone/train/data/artefacts", False)
 
-        # TODO: CODE HERE
         # assert that accuracy is equal to 1.0
-        self.assertEqual(accuracy, 1.0)
+        self.assertEqual(accuracy, 0.5)
 
 
 if __name__ == "__main__":

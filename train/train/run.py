@@ -9,6 +9,7 @@ from keras.layers import Dense
 
 from preprocessing.preprocessing.embeddings import embed
 from preprocessing.preprocessing.utils import LocalTextCategorizationDataset
+from preprocessing.preprocessing.utils import _SimpleSequence
 
 logger = logging.getLogger(__name__)
 
@@ -50,14 +51,14 @@ def train(dataset_path, train_conf, model_path, add_timestamp):
     # add a dense layer with relu activation
     # add an output layer (multiclass classification problem)
     model = Sequential()
-    model.add(Dense(train_conf["dense_dim"], activation="relu"))
-    model.add(Dense(1))
+    model.add(Dense(train_conf["dense_dim"], activation="relu", input_shape=(768,)))
+    model.add(Dense(units=dataset.get_num_labels(), activation='softmax'))
 
     model.compile(loss="categorical_crossentropy", optimizer="Adam", metrics=["accuracy"])
 
     # model fit using data sequences
-    train_history = model.fit(dataset.get_train_batch()[0],
-                              dataset.get_train_batch()[1],
+    train_history = model.fit(dataset.get_train_sequence(),
+                              validation_data=dataset.get_test_sequence(),
                               verbose=1,
                               epochs=train_conf["epochs"]
                               )
@@ -68,12 +69,12 @@ def train(dataset_path, train_conf, model_path, add_timestamp):
     logger.info("Test Accuracy: {:.2f}".format(scores[1] * 100))
 
     # create folder artefacts_path
-    dir = os.path.join(artefacts_path, "artefacts_path")
+    dir = artefacts_path
     if not os.path.exists(dir):
         os.mkdir(dir)
 
     # save model in artefacts folder, name model.h5
-    model.save('artefacts_path', save_format="h5")
+    model.save(os.path.join(artefacts_path, "model"), save_format="h5")
 
     # save train_conf used in artefacts_path/params.json
     with open(os.path.join(artefacts_path, "params.json"), "w") as f:
@@ -108,6 +109,6 @@ if __name__ == "__main__":
     with open(args.config_path, 'r') as config_f:
         train_params = yaml.safe_load(config_f.read())
 
-    logger.info(f"Training model with parameters: {train_params}")
+    print(f"Training model with parameters: {train_params}")
 
     train(args.dataset_path, train_params, args.artefacts_path, args.add_timestamp)
