@@ -5,12 +5,24 @@ from preprocessing.preprocessing.embeddings import embed
 import os
 import unittest
 from preprocessing.preprocessing.utils import _SimpleSequence
-from predict.predict.run import *
+from predict.predict.run import TextPredictionModel
+if __name__ == "__main__":
 
-path = "stackoverflow_posts.csv"
+    # Get the absolute path of the current directory
+    current_dir = os.path.dirname(os.path.realpath(__file__))
 
-base = utils.BaseTextCategorizationDataset(20, 0.8)
-cat_base = utils.LocalTextCategorizationDataset(path, 100)
+
+    artefacts_path = os.path.abspath(os.path.join(current_dir, 'train', 'data', 'artefacts'))
+    print(artefacts_path)
+    model = TextPredictionModel.from_artefacts(artefacts_path)
+
+    text = "Is it possible to execute the procedure of a function in the scope of the caller?"
+    result = model.predict([text])
+    print(result)
+# path = "stackoverflow_posts.csv"
+#
+# base = utils.BaseTextCategorizationDataset(20, 0.8)
+# cat_base = utils.LocalTextCategorizationDataset(path, 100)
 
 # print(cat_base.get_train_sequence().get_batch_method)
 # print((cat_base.get_train_sequence()))
@@ -24,7 +36,7 @@ cat_base = utils.LocalTextCategorizationDataset(path, 100)
 # df = cat_base.load_dataset(path, min_samples_per_label=100)
 #
 
-predict = TextPredictionModel()
+
 
 # print(df.head())
 # print(cat_base._get_label_list())

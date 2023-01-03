@@ -2,7 +2,6 @@ import json
 import argparse
 import os
 import time
-from collections import OrderedDict
 
 from keras.models import load_model
 from numpy import argsort
@@ -29,6 +28,7 @@ class TextPredictionModel:
         """
         # TODO: CODE HERE
         # load model
+        logger.info("load model")
         model = load_model(os.path.join(artefacts_path, "model"))
 
         # TODO: CODE HERE
