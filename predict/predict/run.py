@@ -29,7 +29,7 @@ class TextPredictionModel:
         """
         # TODO: CODE HERE
         # load model
-        model = load_model(os.path.join(artefacts_path, "model.h5"))
+        model = load_model(os.path.join(artefacts_path, "model"))
 
         # TODO: CODE HERE
 
@@ -87,6 +87,7 @@ if __name__ == "__main__":
             txt = input("Type the text you would like to tag: ")
             predictions = model.predict([txt])
             print(predictions)
+
     else:
         print(f'Predictions for `{args.text}`')
         print(model.predict([args.text]))
