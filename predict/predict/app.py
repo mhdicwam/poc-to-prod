@@ -2,8 +2,6 @@ import streamlit as st
 from run import TextPredictionModel
 import os
 
-import sys
-sys.path.append('../')
 
 # Get the absolute path of the current directory
 current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -32,7 +30,7 @@ def main():
         result = model.predict([text])
     st.success('The label of the given text  {}'.format(result))
     if st.button("About"):
-        st.text("Predicting the Language of a given stackover flow request using classifier")
+        st.text("Predicting the Language of a given stackoverflow request using text classifier")
         st.text("API built with Streamlit")
 
 

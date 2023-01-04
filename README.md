@@ -2,6 +2,6 @@
 
 Execute the program : 
 
-Go the the directory "ppoc-to-prod-capstone\predict\predict>"
+Go the the directory "poc-to-prod-capstone>" the root of the project
 and run 
 >streamlit run app.py

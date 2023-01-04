@@ -2,11 +2,15 @@ import json
 import argparse
 import os
 import time
-
+import sys
 from keras.models import load_model
 from numpy import argsort
 
 from preprocessing.preprocessing.embeddings import embed
+
+sys.path.insert(0, 'C:/Users/cham/Desktop/5A/from poc to prod/poc-to-prod-capstone/preprocessing/preprocessing')
+
+
 
 import logging
 
